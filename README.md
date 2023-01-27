@@ -11,5 +11,14 @@ Inverse the elements of each nested array in a jagged array.
 Find the difference between 2 consecutive elements of each nested array in a jagged array
 
 ## Assignment #4
-Inverse column/row of a rectangular array (*TBC about the expected result*)
+Inverse column/row of a rectangular array
+
+## Assignment #5
+Work with a function using <params> keyword
+
+## Assignment #6
+Swap two objects with some conditions
+
+## Assignment #7
+Parse the first name, middle name, last name given a string
 

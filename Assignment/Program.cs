@@ -3,6 +3,7 @@
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
+using System.Net;
 using System.Runtime.CompilerServices;
 using static System.Console;
 
@@ -74,7 +75,6 @@ class Program
             WriteLine("{" + string.Join(", ", result) + "}");
         }
         WriteLine();
-        
         /* Expected result:
             {1, 5, 9}
             {2, 6, 10}
@@ -82,17 +82,40 @@ class Program
             {4, 8, 12}
          */
 
-        // //Challenge 5
-        // Demo("hello", 1, 2, "world");
-        //
-        // //Challenge 6
-        //
-        // //Challenge 7
-        // string firstName, middleName, lastName;
-        // ParseNames("Mary Elizabeth Smith", firstName, middleName, lastName);
-        // Console.WriteLine($"First name: {firstName}, middle name: {middleName}, last name: {lastName}");
-        //
-        // //Challenge 8
+        //Challenge 5
+        WriteLine("#5 - Work with a function using <params> keyword");
+        Demo("hello", 1, 2, "world");
+        object[] objArr = { 3, 2, "How", 5, "are", "you?" };
+        Demo(objArr);
+        /* Expected result:
+        hello world ; 3
+        How are you? ; 10
+         */
+
+        //Challenge 6
+        WriteLine("#6 - Swap two objects with some conditions");
+        SwapTwo("world", "hello");
+        SwapTwo(18, 25);
+        // SwapTwo(2, "hello");
+        // SwapTwo(13, 25);
+        // SwapTwo("work", "harder");
+        WriteLine();
+
+        //Challenge 7
+        WriteLine("#7 - Parse the first name, middle name, last name given a string");
+        string firstName, middleName, lastName;
+        ParseNames("Mary Elizabeth Will Johanson", out firstName, out middleName, out lastName);
+        WriteLine($"First name: {firstName}" +
+                  $"\nMiddle name: {middleName}" +
+                  $"\nLast name: {lastName}");
+        WriteLine();
+        /*
+        First name: Mary
+        Middle name: Elizabeth Will 
+        Last name: Johanson
+        */
+        
+        //Challenge 8
         // GuessingGame();
     }
 
@@ -213,45 +236,113 @@ class Program
          }
          return newRecArray;
      }
-//
-//     /* 
-//     Challenge 5. Write a function that accepts a variable number of params of any of these types: 
-//     string, number. 
-//     - For strings, join them in a sentence. 
-//     - For numbers then sum them up. 
-//     - Finally print everything out. 
-//     Example: Demo("hello", 1, 2, "world") 
-//     Expected result: hello world; 3 */
-//     static void Demo()
-//     {
-//
-//     }
-//
-//     /* Challenge 6. Write a function to swap 2 objects but only if they are of the same type 
-//     and if they’re string, lengths have to be more than 5. 
-//     If they’re numbers, they have to be more than 18. */
-//     static void SwapTwo()
-//     {
-//
-//     }
-//
-//     /* Challenge 7. Write a function to parse the first name, middle name, last name given a string. 
-//     The names will be returned by using out modifier */
-//     static void ParseNames(
-//         string input,
-//         out string firstName,
-//         out string middleName,
-//         out string lastName)
-//     {
-//
-//     }
-//
-//     /* Challenge 8. Write a function that does the guessing game. 
-//     The function will think of a random integer number (lets say within 100) 
-//     and ask the user to input a guess. 
-//     It’ll repeat the asking until the user puts the correct answer. */
-//     static void GuessingGame()
-//     {
-//
-//     }
+
+     /* 
+     Challenge 5. Write a function that accepts a variable number of params of any of these types: 
+     string, number. 
+     - For strings, join them in a sentence. 
+     - For numbers then sum them up. 
+     - Finally print everything out. 
+     Example: Demo("hello", 1, 2, "world") 
+     Expected result: hello world; 3 */
+     static void Demo(params object[] inputs)
+     {
+         string sentence = "";
+         int sumInt = 0;
+         foreach (var input in inputs)
+         {
+             if (input is string)
+             {
+                 sentence += input + " ";
+             }
+             else
+             {
+                 sumInt += (int)input;
+             }
+         }
+
+         WriteLine($"{sentence}; {sumInt}");
+     }
+
+     /* Challenge 6. Write a function to swap 2 objects but only if they are of the same type 
+     and if they’re string, lengths have to be more than 5. 
+     If they’re numbers, they have to be more than 18. */
+     static void SwapTwo(object obj1, object obj2)
+     {
+         if (obj1 == null || obj2 == null)
+         {
+             throw new ArgumentException("Cannot swap the null object(s).");
+         }
+
+         if (obj1 is string && obj2 is string)
+         {
+             int lengthObj1 = obj1.ToString().Length;
+             int lengthObj2 = obj2.ToString().Length;
+             if (lengthObj1 < 5 || lengthObj2 < 5)
+             {
+                 throw new ArgumentException("Cannot swap the string(s) less than 5 chars.");
+             }
+         }
+         else if (obj1 is int && obj2 is int)
+         {
+             
+             if ((int)obj1 < 18 || (int)obj2 < 18)
+             {
+                 throw new ArgumentException("Cannot swap number(s) less than 18.");
+             }
+         }
+         else if (obj1.GetType() != obj2.GetType())
+         {
+             throw new ArgumentException("Cannot swap objects of different types.");
+         }
+         object tmp = obj2;
+         obj2 = obj1;
+         obj1 = tmp;
+         
+         WriteLine($"{obj1}, {obj2}");
+     }
+
+     /* Challenge 7. Write a function to parse the first name, middle name, last name given a string. 
+     The names will be returned by using out modifier */
+     static void ParseNames(
+         string input,
+         out string firstName,
+         out string middleName,
+         out string lastName)
+     {
+         firstName = "";
+         middleName = "";
+         lastName = "";
+
+         var splitName = input.Split(' ');
+         if (splitName.Length == 1)
+         {
+             firstName = splitName[0];
+         }
+         else if (splitName.Length == 2)
+         {
+             firstName = splitName[0];
+             lastName = splitName[1];
+         }
+         else if (splitName.Length >= 3)
+         {
+             firstName = splitName[0];
+             
+             for (int i = 1; i <= splitName.Length - 2; i++)
+             {
+                 middleName += splitName[i] + " ";
+             }
+
+             lastName = splitName[splitName.Length - 1];
+         }
+     }
+
+     /* Challenge 8. Write a function that does the guessing game. 
+     The function will think of a random integer number (lets say within 100) 
+     and ask the user to input a guess. 
+     It’ll repeat the asking until the user puts the correct answer. */
+     // static void GuessingGame()
+     // {
+     //    
+     // }
 }
